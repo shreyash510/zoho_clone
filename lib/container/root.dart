@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zoho_clone/components/bottomNavbar.dart';
-import 'package:zoho_clone/pages/home/components/notifications.dart';
+import 'package:zoho_clone/pages/notification/notifications.dart';
 import 'package:zoho_clone/pages/home/home.dart';
 import 'package:zoho_clone/pages/login.dart';
 import 'package:zoho_clone/pages/profile.dart';
