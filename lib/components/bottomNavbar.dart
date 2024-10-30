@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:zoho_clone/pages/approvals/approvals.dart';
 import 'package:zoho_clone/pages/more/more.dart';
-import 'package:zoho_clone/pages/notification/notifications.dart';
 import 'package:zoho_clone/pages/home/home.dart';
 import 'package:zoho_clone/pages/login.dart';
-import 'package:zoho_clone/pages/profile.dart';
 import 'package:zoho_clone/pages/services/service.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
@@ -16,19 +15,19 @@ class CustomBottomNavigationBar extends StatefulWidget {
 
 class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   int _selectedIndex = 1;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  // Updated icons and added screens in the list
   static List _widgetOptions = [
-    ServiceScreen.new(),
-    HomeScreen.new(),
-    LoginScreen.new(),
-    ProfileScreen.new(),
-    MoreScreen.new(),
+    ServiceScreen(),
+    HomeScreen(),
+    LoginScreen(), // This will act as the central "Add" button
+    ApprovalsScreen(),
+    MoreScreen(),
   ];
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      // Open a modal from the bottom when the middle button is tapped
+      // Show modal when the middle button is tapped
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -39,8 +38,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  _quickActionModal(),
-                  // const Text('Bottom Modal Content'),
+                  _quickActionModal(context),
                   ElevatedButton(
                     child: Icon(
                       Icons.clear,
@@ -71,90 +69,102 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.auto_awesome_mosaic_rounded,
-              size: 40,
-              // color: Colors.black,
-            ),
-            label: 'Services',
-            backgroundColor: Colors.white,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            // First icon - Services
+            _buildNavItem(
+                icon: Icons.grid_view_rounded, label: 'Services', index: 0),
+
+            // Second icon - Home
+            _buildNavItem(icon: Icons.home_outlined, label: 'Home', index: 1),
+
+            // Spacer for central button
+            const SizedBox(width: 40), // Added spacer for middle button
+
+            // Fourth icon - Approvals
+            _buildNavItem(
+                icon: Icons.task_alt_outlined, label: 'Approvals', index: 3),
+
+            // Fifth icon - More
+            _buildNavItem(icon: Icons.more_horiz, label: 'More', index: 4),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(50), // 50% border radius for circular shape
+        ),
+        onPressed: () => _onItemTapped(2),
+        child:
+            Icon(Icons.add, size: 30, color: Colors.black), // Central "+" icon
+        backgroundColor: Colors.white, // White background for central button
+        elevation: 2,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  Widget _buildNavItem(
+      {required IconData icon, required String label, required int index}) {
+    return GestureDetector(
+      onTap: () => _onItemTapped(index),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 30, // Icon size adjusted to match design
+            color: _selectedIndex == index
+                ? Colors.blue
+                : Colors.black54, // Active color blue, inactive grey
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.houseboat_outlined,
-              size: 40,
-              // color: Colors.black,
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12, // Adjusted font size for labels
+              color: _selectedIndex == index ? Colors.blue : Colors.black54,
             ),
-            label: 'Home',
-            backgroundColor: Colors.white,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.add_circle_outline,
-              size: 40,
-              // color: Colors.black,
-            ),
-            label: '',
-            backgroundColor: Colors.white,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.check_box_outlined,
-              size: 40,
-              // color: Colors.black,
-            ),
-            label: 'Approve',
-            backgroundColor: Colors.white,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.more_horiz,
-              size: 40,
-              // color: Colors.black,
-            ),
-            label: 'More',
-            backgroundColor: Colors.white,
           ),
         ],
-        currentIndex: _selectedIndex,
-        // selectedIconTheme: const IconThemeData(
-        //     size: 60,
-        //     color: Colors.blue), // Custom size and color for selected item
-        selectedItemColor: Colors.blue,
-
-        onTap: _onItemTapped,
       ),
     );
   }
 }
 
-Widget _quickActionModal() {
+Widget _quickActionModal(BuildContext context) {
+  double iconSize = MediaQuery.of(context).size.width > 400 ? 30 : 20;
+  double fontSize = MediaQuery.of(context).size.width > 400 ? 14 : 12;
+
   return Container(
-      margin: EdgeInsets.all(20),
-      child: GridView.count(
-        shrinkWrap: true, // Important to avoid unbounded height error
-        crossAxisCount: 3, // Number of columns in the grid
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        children: [
-          _quickActionCard('Status', Icons.info, Colors.blue),
-          _quickActionCard(
-              'Compensatory leave', Icons.calendar_today, Colors.orange),
-          _quickActionCard('Regularisation', Icons.update, Colors.purple),
-          _quickActionCard('Timelog', Icons.access_time, Colors.green),
-          _quickActionCard('Leave', Icons.beach_access, Colors.teal),
-        ],
-      ));
+    margin: EdgeInsets.all(20),
+    child: GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 3,
+      crossAxisSpacing: 8,
+      mainAxisSpacing: 8,
+      children: [
+        _quickActionCard('Status', Icons.info, Colors.blue, iconSize, fontSize),
+        _quickActionCard(
+            'Leave', Icons.beach_access, Colors.orange, iconSize, fontSize),
+        _quickActionCard(
+            'TimeLog', Icons.update, Colors.purple, iconSize, fontSize),
+        _quickActionCard('Leave', Icons.leave_bags_at_home, Colors.purple,
+            iconSize, fontSize),
+      ],
+    ),
+  );
 }
 
-Widget _quickActionCard(String label, IconData icon, Color color) {
+Widget _quickActionCard(String label, IconData icon, Color color,
+    double iconSize, double fontSize) {
   return Card(
-    elevation: 4,
-    surfaceTintColor: Colors.white,
+    elevation: 2,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),
@@ -165,15 +175,16 @@ Widget _quickActionCard(String label, IconData icon, Color color) {
         children: [
           Icon(
             icon,
-            size: 40,
-            color: color, // Apply dynamic color
+            size: iconSize,
+            color: color,
           ),
-          SizedBox(height: 8), // Spacing between icon and text
+          SizedBox(height: 8),
           Text(
             label,
             style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
             ),
             textAlign: TextAlign.center,
           ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:zoho_clone/components/bottomNavbar.dart';
+import 'package:zoho_clone/pages/approvals/approvals.dart';
 import 'package:zoho_clone/pages/notification/notifications.dart';
 import 'package:zoho_clone/pages/home/home.dart';
 import 'package:zoho_clone/pages/login.dart';
 import 'package:zoho_clone/pages/profile.dart';
 import 'package:zoho_clone/pages/services/service.dart';
+import 'package:zoho_clone/pages/settings/settings.dart';
 
 class RootContainer extends StatelessWidget {
   final bool isLoggedIn = false;
@@ -32,6 +34,10 @@ class RootContainer extends StatelessWidget {
                   builder: (context) => NotificationScreen());
             case "/services":
               return MaterialPageRoute(builder: (context) => ServiceScreen());
+            case "/settings":
+              return MaterialPageRoute(builder: (context) => SettingsScreen());
+            case "/approvals":
+              return MaterialPageRoute(builder: (context) => ApprovalsScreen());
             default:
               return MaterialPageRoute(
                   builder: (context) => CustomBottomNavigationBar());

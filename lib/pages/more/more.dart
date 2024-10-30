@@ -31,10 +31,10 @@ class _MoreScreenState extends State<MoreScreen> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.notifications),
+              icon: Icon(Icons.settings),
               iconSize: 25,
               onPressed: () {
-                Navigator.of(context).pushNamed('/notifications');
+                Navigator.of(context).pushNamed('/settings');
               },
             )
           ]),
@@ -117,11 +117,71 @@ final menuItems = [
     'title': 'Feeds',
     'subItems': ['My Feeds', 'Department', 'Announcements']
   },
-  {'icon': Icons.alarm, 'title': 'Leave Tracker', 'subItems': []},
-  {'icon': Icons.access_time, 'title': 'Time Tracker', 'subItems': []},
-  {'icon': Icons.event, 'title': 'Attendance', 'subItems': []},
+  {
+    'icon': Icons.alarm,
+    'title': 'Leave Tracker',
+    'subItems': ['Views', 'Compensatory Request', 'Holidays']
+  },
+  {
+    'icon': Icons.access_time,
+    'title': 'Time Tracker',
+    'subItems': ["Time Logs", "Timesheets", "Jobs", "Projects"]
+  },
+  {
+    'icon': Icons.event,
+    'title': 'Attendance',
+    'subItems': ["My Attendance", "Regularization"]
+  },
   {'icon': Icons.folder, 'title': 'Files', 'subItems': []},
-  {'icon': Icons.business, 'title': 'Organization', 'subItems': []},
-  {'icon': Icons.school, 'title': 'Training', 'subItems': []},
-  {'icon': Icons.travel_explore, 'title': 'Travel', 'subItems': []},
+  {
+    'icon': Icons.business,
+    'title': 'Organization',
+    'subItems': [
+      "View",
+      "Thumbs Up",
+      "Skills Acquired",
+      "Suggestion Box",
+      "Employee Profile Form"
+    ]
+  },
+  {
+    'icon': Icons.school,
+    'title': 'Training',
+    'subItems': [
+      "Training",
+      "Training Registration",
+      "Training Feedback",
+    ]
+  },
+  {
+    'icon': Icons.travel_explore,
+    'title': 'Travel',
+    'subItems': ["Travel Request", "Travel Expense"]
+  },
+  // Compensation
+  {
+    'icon': Icons.monetization_on,
+    'title': 'Compensation',
+    'subItems': [
+      "Asset",
+      "Benefit",
+    ]
+  },
+  // Tasks
+  // Announcements
+  // Office Readiness
+  {'icon': Icons.assignment, 'title': 'Tasks', 'subItems': []},
+  {
+    'icon': Icons.announcement,
+    'title': 'Announcements',
+    'subItems': ["Announcement", "Announcement Group"]
+  },
+  {
+    'icon': Icons.star,
+    'title': 'Office Readiness',
+    'subItems': [
+      "Work from office",
+      "Visitor at office",
+    ]
+  }
 ];
