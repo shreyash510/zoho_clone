@@ -20,12 +20,22 @@ class _ApprovalsScreenState extends State<ApprovalsScreen> {
             },
           ),
           title: TextButton(
-            onPressed: _showBottomSheetModal,
-            child: Text(
-              'My Approvals',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-            ),
-          ),
+              onPressed: _showBottomSheetModal,
+              child: Row(
+                children: [
+                  Text(
+                    'My Approvals',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Icon(
+                      Icons.arrow_drop_down,
+                      size: 25,
+                    ),
+                  )
+                ],
+              )),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.filter_alt_outlined),
