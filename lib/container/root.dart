@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:zoho_clone/components/bottomNavbar.dart';
@@ -8,11 +9,42 @@ import 'package:zoho_clone/pages/login.dart';
 import 'package:zoho_clone/pages/profile.dart';
 import 'package:zoho_clone/pages/services/service.dart';
 import 'package:zoho_clone/pages/settings/settings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-class RootContainer extends StatelessWidget {
-  final bool isLoggedIn = false;
+class RootContainer extends StatefulWidget {
+  @override
+  State<RootContainer> createState() => _RootContainerState();
+}
+
+class _RootContainerState extends State<RootContainer> {
+  User? user;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen for auth state changes
+    _auth.authStateChanges().listen((User? user) {
+      if (user == null) {
+        setState(() {
+          this.isLoggedIn = false;
+        });
+      } else {
+        setState(() {
+          this.user = user;
+          this.isLoggedIn = true;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('****$user');
     return FutureBuilder(
       future: Firebase.initializeApp(),
       builder: (context, snapshot) {

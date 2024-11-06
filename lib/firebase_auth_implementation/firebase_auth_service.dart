@@ -26,4 +26,14 @@ class FirebaseAuthService {
     }
     return null;
   }
+
+  Future<bool> logout() async {
+    try {
+      await _auth.signOut();
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
 }

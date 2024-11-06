@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zoho_clone/firebase_auth_implementation/firebase_auth_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool shakeForFeedback = false;
+  FirebaseAuthService _authService = new FirebaseAuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.power_settings_new, color: Colors.red),
-            onPressed: () {},
+            onPressed: () async {
+              await _authService.logout();
+            },
           ),
         ],
       ),
@@ -189,8 +193,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
             ),
-            onTap: () {
-              // Handle sign-out
+            onTap: () async {
+              await _authService.logout();
             },
           ),
         ],
