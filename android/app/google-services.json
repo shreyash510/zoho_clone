@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "807903558584",
+    "project_id": "zoho-clone-6cccf",
+    "storage_bucket": "zoho-clone-6cccf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807903558584:android:533bcff0de70610831ed4d",
+        "android_client_info": {
+          "package_name": "com.example.zoho_clone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIdXzvcRR37UGtJ3pzfvXVvKkoqv5Smpw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
