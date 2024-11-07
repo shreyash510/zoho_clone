@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -146,8 +147,10 @@ Widget _buildProfileHeader() {
         Stack(
           alignment: Alignment.center,
           children: [
-            Image.network(
-              "https://static.vecteezy.com/system/resources/previews/001/840/612/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg",
+            FadeInImage.memoryNetwork(
+              placeholder: kTransparentImage,
+              image:
+                  'https://static.vecteezy.com/system/resources/previews/001/840/612/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg',
             ),
             // Button 1 - Edit (Top Right)
             Positioned(

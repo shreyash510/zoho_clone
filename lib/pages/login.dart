@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zoho_clone/firebase_auth_implementation/firebase_auth_service.dart';
+import 'package:zoho_clone/firebase_services/firebase_auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -24,7 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if (result != null) {
         // Navigate to the home page or show success message
         print("Login successful!");
-        Navigator.of(context).pushNamed('/');
       } else {
         // Handle login failure
         print("Login failed. Showing dialog...");
