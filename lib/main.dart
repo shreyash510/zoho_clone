@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'container/root.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +18,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: RootContainer(),
-    );
+    return MaterialApp(home: ProviderScope(child: RootContainer()));
   }
 }

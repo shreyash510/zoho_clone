@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:zoho_clone/models/user.dart';
+import 'package:zoho_clone/provider/user_provider.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
+class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
@@ -21,6 +24,8 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
+    final userDetails = ref.watch(userProvider);
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -37,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         body: SingleChildScrollView(
           child: Column(
             children: [
-              _buildProfileHeader(),
+              _buildProfileHeader(userDetails!),
               TabBar(
                 isScrollable: true,
                 controller: _tabController,
@@ -58,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    _buildProfileTab(),
+                    _buildProfileTab(userDetails!),
                     _buildTeamTab(),
                     _buildLeaveTrackerTab(),
                     _buildTimeTrackerTab(),
@@ -72,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         ));
   }
 
-  Widget _buildProfileTab() {
+  Widget _buildProfileTab(User userDetails) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -89,8 +94,10 @@ class _ProfileScreenState extends State<ProfileScreen>
               'Technology Solutions'), // Add more fields as needed
           _buildProfileDetail(
               'Mobile', '09876543234'), // Add more fields as needed
-          _buildProfileDetail('Email ID',
-              'shreyashkolhe2001@gmail.com'), // Add more fields as needed
+          _buildProfileDetail(
+              'Email ID',
+              userDetails.email ??
+                  "shreyeshkolhe@iconnectsolutions.com"), // Add more fields as needed
           _buildProfileDetail(
               'Availabilities', ''), // Add more fields as needed
           _buildProfileDetail('Shift', 'TGeneral'), // Add more fields as needed
@@ -137,7 +144,7 @@ Widget _buildAttendanceTab() {
   return Center(child: Text('Attendance Content'));
 }
 
-Widget _buildProfileHeader() {
+Widget _buildProfileHeader(User userDetails) {
   return Container(
     padding: EdgeInsets.all(16.0),
     color: Colors.grey[50],
@@ -194,7 +201,8 @@ Widget _buildProfileHeader() {
         ),
         SizedBox(height: 5),
         Text(
-          'shreyeshk@iconnectsolutions.com', // Replace with dynamic email
+          userDetails.email ??
+              "shreyeshkolhe@iconnectsolutions.com", // Replace with dynamic email
           style: TextStyle(color: Colors.grey[600]),
         ),
         SizedBox(height: 10),

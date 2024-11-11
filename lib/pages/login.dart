@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zoho_clone/firebase_services/firebase_auth_service.dart';
+import 'package:zoho_clone/services/firebase_auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
