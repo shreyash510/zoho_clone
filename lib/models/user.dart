@@ -1,30 +1,34 @@
 class User {
-  final String name;
+  final String id;
   final String email;
+  final dynamic details;
 
-  User({required this.name, required this.email});
+  User({required this.id, required this.email, this.details});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      name: json['name'] as String,
-      email: json['email'] as String,
-    );
+        id: json["id"] as String,
+        email: json['email'] as String,
+        details: json["other_details"] as dynamic);
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
+      "id": id,
       'email': email,
+      'details': details,
     };
   }
 
   User copyWith({
-    String? newName,
+    String? newId,
     String? newEmail,
+    dynamic? newDetails,
   }) {
     return User(
-      name: newName ?? this.name,
+      id: newId ?? this.id,
       email: newEmail ?? this.email,
+      details: newDetails ?? this.details,
     );
   }
 }

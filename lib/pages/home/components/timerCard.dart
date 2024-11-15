@@ -1,17 +1,98 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zoho_clone/models/attendence.dart';
+import 'package:zoho_clone/provider/attendence_provider.dart';
+import 'package:zoho_clone/provider/user_provider.dart';
 
-class TimerCard extends StatefulWidget {
+class TimerCard extends ConsumerStatefulWidget {
   @override
   _TimerCardState createState() => _TimerCardState();
 }
 
-class _TimerCardState extends State<TimerCard> {
+class _TimerCardState extends ConsumerState<TimerCard> {
+  late Timer _timer;
+
+  int hours = 00;
+  int minutes = 00;
+  int seconds = 00;
+  String date = '13-11-2024';
+  late int currentCheckInInMilisecond;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getUserAttendence();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  // get user Attendence from database
+  Future<Attendance?> _getUserAttendence() async {
+    final currentUser = ref.watch(userProvider);
+    final attendence = ref.watch(attendanceProvider);
+
+    if (currentUser == null) {
+      return null;
+    }
+    await ref
+        .read(attendanceProvider.notifier)
+        .fetchUserAttendanceByUserId(currentUser.id);
+
+    final userAttendance = attendence[date];
+    if (userAttendance != null) {
+      return userAttendance;
+    }
+
+    return null;
+  }
+
+  void handleTimercheck() async {
+    final userAttendence = await _getUserAttendence();
+
+    if (userAttendence?.isPresent == true) {
+      DateTime checkInTime = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(userAttendence!.checkin))
+          .toUtc();
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        DateTime currentDateTime = DateTime.now().toUtc();
+        if (currentDateTime.isAfter(checkInTime)) {
+          Duration timeStampDiff = currentDateTime.difference(checkInTime);
+          setState(() {
+            hours = timeStampDiff.inHours;
+            minutes = timeStampDiff.inMinutes % 60;
+            seconds = timeStampDiff.inSeconds % 60;
+          });
+        }
+      });
+    }
+  }
+
+  // handle checkIn checkOut button
+  void handleCheckInAndCheckout() async {
+    final result = await _getUserAttendence();
+    print('result: ${result?.isPresent}');
+  }
+
   @override
   Widget build(BuildContext context) {
     // return Scaffold(
     //   backgroundColor: Colors.black,
     //   body: Center(
+    String formattedHours = hours.toString().padLeft(2, '0');
+    String formattedMinutes = minutes.toString().padLeft(2, '0');
+    String formattedSeconds = seconds.toString().padLeft(2, '0');
     return Container(
       // width: 300,
       padding: EdgeInsets.all(22),
@@ -26,11 +107,11 @@ class _TimerCardState extends State<TimerCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildTimeBox("00"),
+                _buildTimeBox('$formattedHours'),
                 _buildColon(),
-                _buildTimeBox("00"),
+                _buildTimeBox("$formattedMinutes"),
                 _buildColon(),
-                _buildTimeBox("00"),
+                _buildTimeBox("$formattedSeconds"),
               ],
             ),
             SizedBox(height: 20),
@@ -53,9 +134,7 @@ class _TimerCardState extends State<TimerCard> {
             SizedBox(height: 20),
             // Check-In Button
             ElevatedButton(
-              onPressed: () {
-                // Add Check-In functionality here
-              },
+              onPressed: handleTimercheck,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal, // Button color
                 shape: RoundedRectangleBorder(

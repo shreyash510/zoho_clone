@@ -42,7 +42,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         body: SingleChildScrollView(
           child: Column(
             children: [
-              _buildProfileHeader(userDetails!),
+              _buildProfileHeader(context, userDetails!),
               TabBar(
                 isScrollable: true,
                 controller: _tabController,
@@ -144,7 +144,7 @@ Widget _buildAttendanceTab() {
   return Center(child: Text('Attendance Content'));
 }
 
-Widget _buildProfileHeader(User userDetails) {
+Widget _buildProfileHeader(context, User userDetails) {
   return Container(
     padding: EdgeInsets.all(16.0),
     color: Colors.grey[50],
@@ -166,7 +166,7 @@ Widget _buildProfileHeader(User userDetails) {
               child: IconButton(
                 icon: Icon(Icons.edit, color: Colors.black),
                 onPressed: () {
-                  // Edit button pressed
+                  Navigator.of(context).pushNamed('/editProfile');
                 },
               ),
             ),

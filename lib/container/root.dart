@@ -7,7 +7,8 @@ import 'package:zoho_clone/pages/approvals/approvals.dart';
 import 'package:zoho_clone/pages/notification/notifications.dart';
 import 'package:zoho_clone/pages/home/home.dart';
 import 'package:zoho_clone/pages/login.dart';
-import 'package:zoho_clone/pages/profile.dart';
+import 'package:zoho_clone/pages/profile/editProfile.dart';
+import 'package:zoho_clone/pages/profile/profile.dart';
 import 'package:zoho_clone/pages/services/service.dart';
 import 'package:zoho_clone/pages/settings/settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,6 +76,9 @@ class _RootContainerState extends ConsumerState<RootContainer> {
                 case "/approvals":
                   return MaterialPageRoute(
                       builder: (context) => ApprovalsScreen());
+                case "/editProfile":
+                  return MaterialPageRoute(
+                      builder: (context) => EditProfilePage());
                 default:
                   return MaterialPageRoute(
                       builder: (context) => CustomBottomNavigationBar());

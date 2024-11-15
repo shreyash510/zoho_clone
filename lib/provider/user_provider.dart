@@ -15,7 +15,7 @@ class UserNotifier extends StateNotifier<User?> {
       if (firebaseUser != null) {
         // Map Firebase user properties to your custom User instance
         state = User(
-          name: firebaseUser.displayName ?? 'Anonymous',
+          id: firebaseUser.uid ?? "",
           email: firebaseUser.email ?? '',
         );
       } else {
@@ -29,7 +29,6 @@ class UserNotifier extends StateNotifier<User?> {
     return state;
   }
 }
-
 
 // User(displayName: , email: test@gmail.com, isEmailVerified: false, isAnonymous: false,
 // metadata: UserMetadata(creationTime: 2024-11-06 05:49:36.249Z, lastSignInTime: 2024-11-07 12:21:19.431Z),
