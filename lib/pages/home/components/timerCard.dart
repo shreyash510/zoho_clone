@@ -24,12 +24,15 @@ class _TimerCardState extends ConsumerState<TimerCard> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration(seconds: 0), () {
+      _handleTimercheck();
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _getUserAttendence();
+    // Future.microtask(() => _handleTimercheck());
   }
 
   @override
@@ -41,7 +44,6 @@ class _TimerCardState extends ConsumerState<TimerCard> {
   // get user Attendence from database
   Future<Attendance?> _getUserAttendence() async {
     final currentUser = ref.watch(userProvider);
-    final attendence = ref.watch(attendanceProvider);
 
     if (currentUser == null) {
       return null;
@@ -49,6 +51,8 @@ class _TimerCardState extends ConsumerState<TimerCard> {
     await ref
         .read(attendanceProvider.notifier)
         .fetchUserAttendanceByUserId(currentUser.id);
+
+    final attendence = ref.watch(attendanceProvider);
 
     final userAttendance = attendence[date];
     if (userAttendance != null) {
@@ -58,7 +62,7 @@ class _TimerCardState extends ConsumerState<TimerCard> {
     return null;
   }
 
-  void handleTimercheck() async {
+  void _handleTimercheck() async {
     final userAttendence = await _getUserAttendence();
 
     if (userAttendence?.isPresent == true) {
@@ -79,11 +83,11 @@ class _TimerCardState extends ConsumerState<TimerCard> {
     }
   }
 
-  // handle checkIn checkOut button
-  void handleCheckInAndCheckout() async {
-    final result = await _getUserAttendence();
-    print('result: ${result?.isPresent}');
-  }
+  // // handle checkIn checkOut button
+  // void handleCheckInAndCheckout() async {
+  //   final result = await _getUserAttendence();
+  //   print('result: ${result?.isPresent}');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +138,7 @@ class _TimerCardState extends ConsumerState<TimerCard> {
             SizedBox(height: 20),
             // Check-In Button
             ElevatedButton(
-              onPressed: handleTimercheck,
+              onPressed: _handleTimercheck,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal, // Button color
                 shape: RoundedRectangleBorder(

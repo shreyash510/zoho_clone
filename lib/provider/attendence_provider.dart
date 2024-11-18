@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zoho_clone/models/attendence.dart';
 import 'package:zoho_clone/models/user.dart';
 import 'package:zoho_clone/provider/user_provider.dart';
+import 'package:zoho_clone/services/user_services.dart';
 
 // Provider to manage user attendance as a map
 final attendanceProvider =
@@ -11,8 +12,8 @@ final attendanceProvider =
 );
 
 class AttendanceNotifier extends StateNotifier<Map<String, Attendance>> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Ref _ref;
+  final _userServices = new UserService();
 
   AttendanceNotifier(this._ref) : super({});
 
@@ -24,36 +25,19 @@ class AttendanceNotifier extends StateNotifier<Map<String, Attendance>> {
     }
 
     try {
-      DocumentSnapshot<Map<String, dynamic>> snapshot =
-          await _firestore.collection('attendence').doc(userId).get();
+      List<Attendance> attendanceList =
+          await _userServices.getAttendance(userId);
 
-      if (snapshot.exists && snapshot.data() != null) {
-        Map<String, dynamic> data = snapshot.data()!;
-        var dataSnapshot = data.entries;
-
-        // Ensure all entries are non-null and properly formatted before parsing
+      if (attendanceList.isEmpty) {
+        state = {};
+        return;
+      } else {
         Map<String, Attendance> attendanceMap = {};
-        for (var entry in dataSnapshot) {
-          if (entry.value != null &&
-              entry.value is Map<String, dynamic> &&
-              entry.value['isPresent'] != null) {
-            String dataKey = entry.key;
-            dynamic dataValue = entry.value;
-
-            try {
-              attendanceMap[dataKey] =
-                  Attendance.fromJson({dataKey: dataValue});
-            } catch (e) {
-              print('Error parsing entry for ${entry.key}: $e');
-            }
-          } else {
-            print('Invalid or null entry for key ${entry.key}');
-          }
+        for (Attendance attendance in attendanceList) {
+          attendanceMap[attendance.date] = attendance;
         }
 
         state = attendanceMap;
-      } else {
-        state = {};
       }
     } catch (e) {
       print('Error fetching user attendance: $e');
