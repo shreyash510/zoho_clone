@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zoho_clone/models/attendence.dart';
 
@@ -29,10 +31,40 @@ class UserService {
 
   Future<void> setAttendence(String userId, Attendance attendance) async {
     try {
-      await _attendanceCollection.doc(userId).set(
-            attendance.toJson(),
-            SetOptions(merge: true), // Merges with existing data
-          );
+      // await _attendanceCollection.doc(userId).set(
+      //       attendance.toJson(),
+      //       SetOptions(merge: true),
+      //     );
+
+      DocumentReference userDocRef =
+          FirebaseFirestore.instance.collection('attendance').doc(userId);
+
+      await userDocRef.update({
+        'attendances': FieldValue.arrayUnion([attendance.toJson()]),
+      });
+
+      print('userDocRef: ${userDocRef}');
+    } catch (e) {
+      print('Error adding attendance: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> updateAttendence(
+      String userId, Attendance attendance, String formattedDate) async {
+    try {
+      // Serialize Attendance object
+      Map<String, dynamic> attendanceData = attendance.toJson();
+
+      DocumentReference attendanceDocRef =
+          FirebaseFirestore.instance.collection('attendence').doc(userId);
+      // Firestore update operation
+      await attendanceDocRef.update({
+        '$formattedDate.checkin': attendanceData[formattedDate]['checkin'],
+        '$formattedDate.checkout':
+            DateTime.now().toUtc().millisecondsSinceEpoch.toString(),
+        '$formattedDate.isPresent': !attendanceData[formattedDate]['isPresent'],
+      });
     } catch (e) {
       print('Error adding attendance: $e');
       rethrow;

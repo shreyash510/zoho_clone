@@ -44,4 +44,19 @@ class AttendanceNotifier extends StateNotifier<Map<String, Attendance>> {
       rethrow;
     }
   }
+
+  Future<void> updateUserAttendanceByUserId(
+      String userId, Attendance userAttendanceData, String date) async {
+    try {
+      User? currentUser = _ref.read(userProvider);
+      if (currentUser == null) {
+        throw Exception('User is not logged in');
+      }
+
+      await _userServices.updateAttendence(userId, userAttendanceData, date);
+    } catch (e) {
+      print('Error updating user attendance: $e');
+      rethrow;
+    }
+  }
 }
