@@ -3,17 +3,21 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zoho_clone/controllers/home_controller.dart';
 import 'package:zoho_clone/models/attendence.dart';
 import 'package:zoho_clone/provider/attendence_provider.dart';
 import 'package:zoho_clone/provider/user_provider.dart';
 
 class TimerCard extends ConsumerStatefulWidget {
+  final HomeController homeController;
+  const TimerCard({Key? key, required this.homeController}) : super(key: key);
+
   @override
   _TimerCardState createState() => _TimerCardState();
 }
 
 class _TimerCardState extends ConsumerState<TimerCard> {
-  late Timer _timer;
+  Timer? _timer;
 
   int hours = 00;
   int minutes = 00;
@@ -21,6 +25,8 @@ class _TimerCardState extends ConsumerState<TimerCard> {
   String date = '';
   bool isPresent = false;
   DateTime now = DateTime.now();
+
+  HomeController homeController = HomeController();
 
   @override
   void initState() {
@@ -42,7 +48,7 @@ class _TimerCardState extends ConsumerState<TimerCard> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -60,24 +66,39 @@ class _TimerCardState extends ConsumerState<TimerCard> {
   }
 
   void _handleTimerCheck() async {
-    final currentUser = ref.watch(userProvider);
-    final userAttendance = await _getUserAttendence();
+    try {
+      print('handleTimeCheck start');
 
-    // If the user is not present, exit early
-    if (userAttendance == null || userAttendance.isPresent == false) {
-      _handleAbsentUser(userAttendance);
-      return;
+      // widget.homeController.changeLoadingValue(true); // Start loading
+
+      // Ensure widget is still mounted before calling ref.watch
+      if (!mounted) return;
+
+      final currentUser = ref.watch(userProvider);
+      final userAttendance = await _getUserAttendence();
+
+      // If the user is not present, exit early
+      if (userAttendance == null || userAttendance.isPresent == false) {
+        _handleAbsentUser(userAttendance);
+        return;
+      }
+
+      DateTime checkInTime =
+          DateTime.fromMillisecondsSinceEpoch(int.parse(userAttendance.checkin))
+              .toUtc();
+
+      _startTimer(checkInTime, userAttendance);
+      // Ensure widget is still mounted before calling ref.read
+      if (!mounted) return;
+      await ref
+          .read(attendanceProvider.notifier)
+          .fetchUserAttendanceByUserId(currentUser!.id);
+      print('handleTimeCheck end');
+    } catch (e) {
+      print('_handleTimerCheck error found : $e');
+    } finally {
+      widget.homeController.changeLoadingValue(false); // Stop loading
     }
-
-    DateTime checkInTime =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(userAttendance.checkin))
-            .toUtc();
-
-    _startTimer(checkInTime, userAttendance);
-
-    await ref
-        .read(attendanceProvider.notifier)
-        .fetchUserAttendanceByUserId(currentUser!.id);
   }
 
   void _startTimer(DateTime checkInTime, dynamic userAttendance) {
@@ -97,7 +118,9 @@ class _TimerCardState extends ConsumerState<TimerCard> {
     if (currentDateTime.isAfter(checkInTime)) {
       _updateTimeDifference(checkInTime, currentDateTime, userAttendance);
     }
-    _timer.cancel();
+    widget.homeController.changeLoadingValue(false); // Start loading
+
+    _timer?.cancel();
   }
 
   void _updateTimeDifference(
@@ -122,6 +145,8 @@ class _TimerCardState extends ConsumerState<TimerCard> {
   // // handle checkIn checkOut button
   void handleCheckInAndCheckout() async {
     try {
+      widget.homeController.changeLoadingValue(true); // Start loading
+
       String formattedDate = getFormattedDate(now);
       final currentUser = ref.watch(userProvider);
       final currentUserAttendance = ref.watch(attendanceProvider);
@@ -153,6 +178,7 @@ class _TimerCardState extends ConsumerState<TimerCard> {
             formattedDate,
           );
       _handleTimerCheck();
+      widget.homeController.changeLoadingValue(false); // Start loading
     } catch (e) {
       print("Error found in _handleCheckInCheckOutBtn : ${e}");
     }
@@ -166,93 +192,95 @@ class _TimerCardState extends ConsumerState<TimerCard> {
     String formattedHours = hours.toString().padLeft(2, '0');
     String formattedMinutes = minutes.toString().padLeft(2, '0');
     String formattedSeconds = seconds.toString().padLeft(2, '0');
-    return Container(
-      // width: 300,
-      padding: EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20), // Rounded corners
-      ),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Time Boxes
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildTimeBox('$formattedHours'),
-                _buildColon(),
-                _buildTimeBox("$formattedMinutes"),
-                _buildColon(),
-                _buildTimeBox("$formattedSeconds"),
-              ],
+    return widget.homeController.isLoading
+        ? Center(child: CircularProgressIndicator()) // Show loading state
+        : Container(
+            // width: 300,
+            padding: EdgeInsets.all(22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20), // Rounded corners
             ),
-            SizedBox(height: 20),
-            // Divider line
-            Container(
-              height: 3,
-              width: 230,
-              color: Colors.grey[700],
-            ),
-            SizedBox(height: 10),
-            // General Time Description
-            Text(
-              'GENERAL 09:30 AM TO 06:30 PM',
-              style: TextStyle(
-                color: Colors.grey[400],
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(height: 20),
-            // Check-In Button
-            isPresent
-                ? ElevatedButton(
-                    onPressed: handleCheckInAndCheckout,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Button color
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 10.0),
-                      child: Text(
-                        'Check-Out',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  )
-                : ElevatedButton(
-                    onPressed: handleCheckInAndCheckout,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal, // Button color
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 10.0),
-                      child: Text(
-                        'Check-In',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Time Boxes
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildTimeBox('$formattedHours'),
+                      _buildColon(),
+                      _buildTimeBox("$formattedMinutes"),
+                      _buildColon(),
+                      _buildTimeBox("$formattedSeconds"),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  // Divider line
+                  Container(
+                    height: 3,
+                    width: 230,
+                    color: Colors.grey[700],
+                  ),
+                  SizedBox(height: 10),
+                  // General Time Description
+                  Text(
+                    'GENERAL 09:30 AM TO 06:30 PM',
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-          ],
-        ),
-      ),
-    );
+                  SizedBox(height: 20),
+                  // Check-In Button
+                  isPresent
+                      ? ElevatedButton(
+                          onPressed: handleCheckInAndCheckout,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red, // Button color
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30.0, vertical: 10.0),
+                            child: Text(
+                              'Check-Out',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: handleCheckInAndCheckout,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.teal, // Button color
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30.0, vertical: 10.0),
+                            child: Text(
+                              'Check-In',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+            ),
+          );
     //   ),
     // );
     return Text("Hello, world!");
