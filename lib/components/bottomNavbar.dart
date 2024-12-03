@@ -33,7 +33,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         builder: (BuildContext context) {
           return Container(
             height: 350,
-            color: Colors.white,
+            // color: Colors.white,
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -184,7 +184,7 @@ Widget _quickActionCard(String label, IconData icon, Color color,
             style: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              // color: Colors.black87,
             ),
             textAlign: TextAlign.center,
           ),

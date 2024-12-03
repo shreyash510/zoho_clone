@@ -76,7 +76,7 @@ class _ApprovalsScreenState extends State<ApprovalsScreen> {
       builder: (BuildContext context) {
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            // color: Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
           height: 100,
