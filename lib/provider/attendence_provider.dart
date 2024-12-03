@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zoho_clone/models/attendence.dart';
 import 'package:zoho_clone/models/user.dart';
 import 'package:zoho_clone/provider/user_provider.dart';

@@ -13,6 +13,7 @@ import 'package:zoho_clone/pages/services/service.dart';
 import 'package:zoho_clone/pages/settings/settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:zoho_clone/provider/setting_provider.dart';
 import "package:zoho_clone/provider/user_provider.dart";
 
 class RootContainer extends ConsumerStatefulWidget {
@@ -32,6 +33,7 @@ class _RootContainerState extends ConsumerState<RootContainer> {
   @override
   Widget build(BuildContext context) {
     final userDetails = ref.watch(userProvider);
+    final settings = ref.watch(settingsProvider);
 
     return FutureBuilder(
       future: Firebase.initializeApp(),
@@ -48,13 +50,22 @@ class _RootContainerState extends ConsumerState<RootContainer> {
           return MaterialApp(
             title: "Zoho Clone",
             theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.black87),
-              primarySwatch: Colors.blue,
               visualDensity: VisualDensity.adaptivePlatformDensity,
               fontFamily: "Poppins",
               useMaterial3: true,
             ),
-            initialRoute: userDetails?.email != null ? "/" : "/login",
+            darkTheme: ThemeData(
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+              fontFamily: "Poppins",
+              useMaterial3: true,
+              brightness: Brightness.dark, // Dark theme brightness
+              primaryColor: Colors.teal,
+              scaffoldBackgroundColor: Colors.black,
+            ),
+            themeMode: settings!.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            initialRoute: userDetails?.email != null
+                ? "/${settings?.currentPage}"
+                : "/login",
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case "/home":

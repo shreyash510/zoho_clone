@@ -1,18 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zoho_clone/models/setting.dart';
+import 'package:zoho_clone/provider/setting_provider.dart';
 import 'package:zoho_clone/services/firebase_auth_service.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool shakeForFeedback = false;
   FirebaseAuthService _authService = new FirebaseAuthService();
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+    print("****** ${settings!.isDarkMode}");
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -67,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBox(height: 16),
           // Company Info Section
           ListTile(
-            tileColor: Colors.grey[200],
+            // tileColor: Colors.grey[200],
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: Text(
@@ -176,8 +182,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(
               'Sync Employee Data',
             ),
-            trailing: Icon(Icons.chevron_right, color: Colors.white),
+            // trailing: Icon(Icons.chevron_right, color: Colors.white),
             onTap: () {},
+          ),
+          ListTile(
+            title: Text(
+              'System Mode',
+            ),
+            trailing: Switch(
+              value: settings!.isDarkMode,
+              onChanged: (value) {
+                ref.read(settingsProvider.notifier).setSettings(
+                      Settings(
+                          isDarkMode: !(settings?.isDarkMode ?? true),
+                          currentPage: "settings"),
+                    );
+              },
+              // activeColor: const Color.fromARGB(255, 0, 0, 0),
+            ),
           ),
           ListTile(
             title: Text('Manage Account'),

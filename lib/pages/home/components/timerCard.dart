@@ -227,7 +227,7 @@ class _TimerCardState extends ConsumerState<TimerCard> {
                   Text(
                     'GENERAL 09:30 AM TO 06:30 PM',
                     style: TextStyle(
-                      color: Colors.grey[400],
+                      // color: Colors.grey[400],
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),

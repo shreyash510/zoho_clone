@@ -120,15 +120,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           Icon(
             icon,
             size: 30, // Icon size adjusted to match design
-            color: _selectedIndex == index
-                ? Colors.blue
-                : Colors.black54, // Active color blue, inactive grey
+            // color: _selectedIndex == index
+            //     ? Colors.blue
+            //     : Colors.black54, // Active color blue, inactive grey
           ),
           Text(
             label,
             style: TextStyle(
               fontSize: 12, // Adjusted font size for labels
-              color: _selectedIndex == index ? Colors.blue : Colors.black54,
+              // color: _selectedIndex == index ? Colors.blue : Colors.black54,
             ),
           ),
         ],

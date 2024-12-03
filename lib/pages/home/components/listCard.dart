@@ -49,7 +49,7 @@ class ListCard extends StatelessWidget {
                     description, // Display the description or default if not provided
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[800],
+                      // color: Colors.grey[800],
                     ),
                   ),
                 ],

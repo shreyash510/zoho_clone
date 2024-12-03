@@ -8,7 +8,7 @@ class HomeCards extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width * 10,
       decoration: BoxDecoration(
-        color: Colors.white,
+        // color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(

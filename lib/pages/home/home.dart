@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zoho_clone/controllers/home_controller.dart';
 import 'package:zoho_clone/pages/home/components/ListCard.dart';
 import 'package:zoho_clone/pages/home/components/homeCards.dart';
 import 'package:zoho_clone/pages/home/components/timerCard.dart';
+import 'package:zoho_clone/provider/attendence_provider.dart';
+import 'package:zoho_clone/provider/setting_provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final HomeController _homeController = HomeController();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final settingsdata = ref.watch(settingsProvider);
+
+    print("settings : ${settingsdata?.isDarkMode}");
     return Scaffold(
         appBar: AppBar(
             leading: IconButton(
