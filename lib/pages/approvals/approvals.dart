@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zoho_clone/pages/approvals/tabs/approval.dart';
+import 'package:zoho_clone/pages/approvals/tabs/pending.dart';
+import 'package:zoho_clone/pages/approvals/tabs/rejection.dart';
 
 class ApprovalsScreen extends StatefulWidget {
   @override
@@ -55,14 +58,10 @@ class _ApprovalsScreenState extends State<ApprovalsScreen> {
         body: TabBarView(
           children: [
             Center(
-                child: Text(
-                    "Pending content here")), // Replace with actual content
-            Center(
-                child: Text(
-                    "Approval content here")), // Replace with actual content
-            Center(
-                child: Text(
-                    "Rejection content here")), // Replace with actual content
+              child: PendingTab(),
+            ), // Replace with actual content
+            Center(child: ApprovalTab()), // Replace with actual content
+            Center(child: RejectionTab()), // Replace with actual content
           ],
         ),
       ),
@@ -97,12 +96,18 @@ class _ApprovalsScreenState extends State<ApprovalsScreen> {
   Widget _quickActionModal(BuildContext context) {
     return Column(
       children: [
+        SizedBox(
+          height: 10,
+        ),
         TextButton(
           onPressed: () {},
           child: Text(
             'My Approvals',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
+        ),
+        SizedBox(
+          height: 10,
         ),
         TextButton(
           onPressed: () {},
