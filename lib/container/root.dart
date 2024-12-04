@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zoho_clone/components/bottomNavbar.dart';
+import 'package:zoho_clone/pages/approvals/approvalDetails.dart';
 import 'package:zoho_clone/pages/approvals/approvals.dart';
 import 'package:zoho_clone/pages/notification/notifications.dart';
 import 'package:zoho_clone/pages/home/home.dart';
@@ -90,6 +91,9 @@ class _RootContainerState extends ConsumerState<RootContainer> {
                 case "/editProfile":
                   return MaterialPageRoute(
                       builder: (context) => EditProfilePage());
+                case "/approvalDetails":
+                  return MaterialPageRoute(
+                      builder: (context) => Approvaldetails());
                 default:
                   return MaterialPageRoute(
                       builder: (context) => CustomBottomNavigationBar());

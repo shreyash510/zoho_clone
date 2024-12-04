@@ -47,8 +47,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 isScrollable: true,
                 controller: _tabController,
                 indicatorColor: Colors.teal,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
+                // labelColor: Colors.black,
+                // unselectedLabelColor: Colors.grey,
                 tabs: [
                   Tab(text: 'Profile'),
                   Tab(text: 'Team'),
@@ -147,7 +147,7 @@ Widget _buildAttendanceTab() {
 Widget _buildProfileHeader(context, User userDetails) {
   return Container(
     padding: EdgeInsets.all(16.0),
-    color: Colors.grey[50],
+    // color: Colors.grey[50],
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
