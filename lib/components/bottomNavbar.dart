@@ -42,7 +42,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   ElevatedButton(
                     child: Icon(
                       Icons.clear,
-                      color: Colors.black,
+                      // color: Colors.black,
                       size: 24.0,
                     ),
                     onPressed: () {
